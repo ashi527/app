@@ -1,0 +1,30 @@
+<ion-content>
+  <app-admin-navbar></app-admin-navbar>
+  <p *ngIf="loading" class="ion-padding">Loading employee...</p>
+  <p *ngIf="error" class="ion-padding">{{ error }}</p>
+
+  <ng-container *ngIf="employee && !loading">
+    <div class="page-header"><div class="header-title"><h1>Edit Employee</h1><p>Update employee information</p></div><button routerLink="/employee" class="back-btn">Back</button></div>
+    <div class="form-card">
+    <div class="profile-section">
+      <div class="profile-image">
+        <img *ngIf="employee.profile_image" [src]="employee.profile_image" alt="Employee profile" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+        <span *ngIf="!employee.profile_image">{{ employee.employee_name.charAt(0).toUpperCase() }}</span>
+      </div>
+      <label class="upload-btn">Change Photo<input type="file" accept="image/png,image/jpeg,image/webp" (change)="selectPhoto($event)" hidden></label>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Employee Name</label><input type="text" [(ngModel)]="employee.employee_name" /></div>
+      <div class="form-group"><label>Employee ID</label><input type="text" [(ngModel)]="employee.employee_id" disabled /></div>
+      <div class="form-group"><label>Email</label><input type="email" [(ngModel)]="employee.email" /></div>
+      <div class="form-group"><label>Phone</label><input type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" [(ngModel)]="employee.phone" /></div>
+      <div class="form-group"><label>Department</label><input type="text" [(ngModel)]="employee.department" /></div>
+      <div class="form-group"><label>Designation</label><input type="text" [(ngModel)]="employee.designation" /></div>
+      <div class="form-group"><label>Office</label><select [(ngModel)]="employee.office_id"><option [ngValue]="null" disabled>Select office</option><option *ngFor="let o of offices" [ngValue]="o.id">{{ o.name }}</option></select></div>
+      <div class="form-group"><label>New Password</label><input type="password" placeholder="Leave blank to keep current password" [(ngModel)]="employee.password" /></div>
+      <div class="form-group full-width"><label>Address</label><textarea rows="5" [(ngModel)]="employee.address"></textarea></div>
+    </div>
+    <div class="button-group"><button class="save-btn" (click)="updateEmployee()" [disabled]="saving">{{ saving ? 'Updating...' : 'Update Employee' }}</button><button class="cancel-btn" routerLink="/employee">Cancel</button></div>
+    </div>
+  </ng-container>
+</ion-content>

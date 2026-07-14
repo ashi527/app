@@ -1,0 +1,113 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<ion-content>
+  <app-admin-navbar></app-admin-navbar>
+
+  <div class="ae-page">
+
+    <header class="ae-header">
+      <button type="button" routerLink="/employee" class="ae-back" aria-label="Back to employees">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <div class="ae-heading">
+        <h1>Add New Employee</h1>
+        <p>Create an employee profile</p>
+      </div>
+    </header>
+
+    <form class="ae-card" (ngSubmit)="saveEmployee()" novalidate>
+
+      <div class="ae-profile">
+        <div class="ae-avatar">
+          <img *ngIf="employee.profile_image" [src]="employee.profile_image" alt="Employee profile" />
+          <span *ngIf="!employee.profile_image">{{ employee.employee_name.charAt(0).toUpperCase() || '?' }}</span>
+        </div>
+        <label class="ae-upload">
+          <i class="fa-solid fa-camera"></i>
+          <span>Upload Photo</span>
+          <input type="file" accept="image/png,image/jpeg,image/webp" (change)="selectPhoto($event)" hidden />
+        </label>
+        <p class="ae-hint">PNG, JPG or WebP · up to 2 MB</p>
+      </div>
+
+      <div class="ae-fields">
+
+        <div class="ae-field">
+          <label><i class="fa-solid fa-user"></i> Employee Name</label>
+          <input type="text" placeholder="Enter employee name" [(ngModel)]="employee.employee_name" name="employee_name" />
+        </div>
+
+        <div class="ae-field">
+          <label><i class="fa-solid fa-id-card"></i> Employee ID</label>
+          <input type="text" placeholder="EMP001" [(ngModel)]="employee.employee_id" name="employee_id" autocapitalize="none" spellcheck="false" />
+        </div>
+
+        <div class="ae-field">
+          <label><i class="fa-solid fa-envelope"></i> Email</label>
+          <input type="email" placeholder="employee@gmail.com" [(ngModel)]="employee.email" name="email" autocapitalize="none" spellcheck="false" />
+        </div>
+
+        <div class="ae-field">
+          <label><i class="fa-solid fa-phone"></i> Phone</label>
+          <input
+            type="tel"
+            inputmode="numeric"
+            maxlength="10"
+            pattern="[0-9]{10}"
+            placeholder="9876543210"
+            [(ngModel)]="employee.phone"
+            name="phone"
+          />
+        </div>
+
+        <div class="ae-field">
+          <label><i class="fa-solid fa-building"></i> Department</label>
+          <select [(ngModel)]="employee.department" name="department">
+            <option value="" disabled selected>Select department</option>
+            <option>IT Department</option>
+            <option>HR</option>
+            <option>Sales Department</option>
+            <option>Operations Department</option>
+            <option>Tally Department</option>
+          </select>
+        </div>
+
+        <div class="ae-field">
+          <label><i class="fa-solid fa-location-dot"></i> Office</label>
+          <select [(ngModel)]="employee.office_id" name="office_id">
+            <option [ngValue]="null" disabled>Select office</option>
+            <option *ngFor="let o of offices" [ngValue]="o.id">{{ o.name }}</option>
+          </select>
+        </div>
+
+        <div class="ae-field">
+          <label><i class="fa-solid fa-briefcase"></i> Designation</label>
+          <input type="text" placeholder="Software Developer" [(ngModel)]="employee.designation" name="designation" />
+        </div>
+
+        <div class="ae-field">
+          <label><i class="fa-solid fa-lock"></i> Password</label>
+          <input type="password" placeholder="Enter password" [(ngModel)]="employee.password" name="password" />
+        </div>
+
+        <div class="ae-field ae-field--full">
+          <label><i class="fa-solid fa-location-dot"></i> Address</label>
+          <textarea placeholder="Enter full address" [(ngModel)]="employee.address" name="address"></textarea>
+        </div>
+
+      </div>
+
+      <div class="ae-actions">
+        <button type="submit" class="ae-btn ae-save">
+          <i class="fa-solid fa-floppy-disk"></i>
+          Save Employee
+        </button>
+        <button type="button" class="ae-btn ae-reset" (click)="resetForm()">
+          <i class="fa-solid fa-rotate-right"></i>
+          Reset
+        </button>
+      </div>
+
+    </form>
+  </div>
+</ion-content>

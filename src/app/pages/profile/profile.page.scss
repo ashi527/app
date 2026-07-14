@@ -1,0 +1,288 @@
+ion-content {
+  --background: #0f172a;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 20px;
+  --padding-bottom: 30px;
+  font-family: "Poppins", sans-serif;
+  color: white;
+}
+
+.page-body {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.header-title h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+.header-title p {
+  margin: 5px 0 0;
+  color: #94a3b8;
+  font-size: 13px;
+}
+.back-btn {
+  padding: 11px 18px;
+  border: none;
+  border-radius: 14px;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.back-btn:hover { background: #273349; }
+
+.hero-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: #111827;
+  border-radius: 22px;
+  padding: 28px 20px 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+}
+.avatar-wrap {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+.avatar {
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  font-size: 42px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  border: 3px solid rgba(255, 255, 255, 0.08);
+}
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cam-badge {
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #06263c;
+  background: linear-gradient(135deg, #67e8f9, #38bdf8);
+  border: 3px solid #111827;
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+}
+.cam-badge svg { width: 16px; height: 16px; }
+.hero-card h2 {
+  margin: 0;
+  font-size: 21px;
+  font-weight: 700;
+}
+.role-chip {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 14px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: rgba(34, 211, 238, 0.16);
+  color: #67e8f9;
+}
+
+.info-card {
+  background: #111827;
+  border-radius: 22px;
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.28);
+}
+.card-title {
+  margin-bottom: 18px;
+}
+.card-title h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+.card-title p {
+  margin: 5px 0 0;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+.form-group label {
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.form-group label .locked {
+  color: #f59e0b;
+  font-weight: 500;
+  font-size: 11px;
+}
+.form-group input,
+.form-group textarea {
+  background: #1e293b;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  padding: 14px 16px;
+  color: #fff;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #2563eb;
+}
+.form-group input:disabled {
+  color: #7e8aa3;
+  background: #172033;
+  cursor: not-allowed;
+}
+.form-group textarea {
+  resize: none;
+}
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+.save-btn {
+  flex: 1;
+  min-width: 160px;
+  padding: 14px 22px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.save-btn:hover { transform: translateY(-2px); }
+.save-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+.section-label {
+  margin: 4px 2px 12px;
+}
+.section-label h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+.nav-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #111827;
+  border-radius: 18px;
+  padding: 16px 18px;
+  margin-bottom: 22px;
+  text-decoration: none;
+  color: #e2e8f0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.nav-card:hover { background: #17203a; transform: translateY(-2px); }
+.nav-card:active { transform: scale(0.99); }
+.nav-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: rgba(56, 189, 248, 0.14);
+  color: #67e8f9;
+}
+.nav-icon svg { width: 20px; height: 20px; }
+.nav-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.nav-text strong { font-size: 15px; }
+.nav-text small { margin-top: 3px; color: #94a3b8; font-size: 12px; }
+.nav-arrow { width: 20px; height: 20px; color: #64748b; flex-shrink: 0; }
+
+.logout-btn {
+  width: 100%;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(225, 29, 72, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.logout-btn svg { width: 20px; height: 20px; }
+.logout-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(225, 29, 72, 0.45); }
+.logout-btn:active { transform: scale(0.98); }
+
+.state {
+  padding: 20px;
+  color: #94a3b8;
+}
+.state.error {
+  color: #f87171;
+}
+
+@media (max-width: 767px) {
+  ion-content {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-top: max(16px, env(safe-area-inset-top));
+    --padding-bottom: 30px;
+  }
+  .header-title h1 { font-size: 24px; }
+}

@@ -1,0 +1,48 @@
+<ion-content>
+  <app-admin-navbar></app-admin-navbar>
+  <p *ngIf="loading" class="ion-padding">Loading employee details...</p>
+  <p *ngIf="error" class="ion-padding">{{ error }}</p>
+
+  <ng-container *ngIf="employee && !loading">
+    <div class="page-header">
+      <div class="header-title"><img *ngIf="employee.profile_image" [src]="employee.profile_image" alt="Employee profile" style="width:64px;height:64px;object-fit:cover;border-radius:50%"><div *ngIf="!employee.profile_image" class="profile-circle">{{ employee.employee_name.charAt(0).toUpperCase() }}</div><h1>{{ employee.employee_name }} - Attendance</h1><p>{{ employee.employee_id }}</p></div>
+      <button routerLink="/employee" class="back-btn">Back</button>
+    </div>
+
+    <div class="employee-info-card">
+      <div class="info-box"><h3>Name</h3><p>{{ employee.employee_name }}</p></div>
+      <div class="info-box"><h3>Email</h3><p>{{ employee.email || '—' }}</p></div>
+      <div class="info-box"><h3>Department</h3><p>{{ employee.department || '—' }}</p></div>
+      <div class="info-box"><h3>Phone</h3><p>{{ employee.phone || '—' }}</p></div>
+      <div class="info-box"><h3>Designation</h3><p>{{ employee.designation || '—' }}</p></div>
+      <div class="info-box"><h3>Office Location</h3><p>{{ employee.location || '—' }}</p></div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card green-card"><h4>Present</h4><h2>{{ countStatus('Present') }}</h2></div>
+      <div class="stat-card yellow-card"><h4>Late</h4><h2>{{ countStatus('Late') }}</h2></div>
+      <div class="stat-card red-card"><h4>Leave</h4><h2>{{ countStatus('Leave') }}</h2></div>
+      <div class="stat-card blue-card"><h4>Total Records</h4><h2>{{ attendance.length }}</h2></div>
+    </div>
+
+    <div class="filter-section">
+      <input type="month" [(ngModel)]="selectedMonth" />
+      <button class="load-btn" (click)="loadEmployee()">Load Report</button>
+    </div>
+
+    <div class="attendance-table"><table>
+      <thead><tr><th>Date</th><th>Day</th><th>Check-In</th><th>Check-Out</th><th>Status</th><th>Working Hours</th><th>Location</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let item of attendance">
+          <td>{{ item.attendance_date | date:'dd MMM yyyy' }}</td><td>{{ item.day_name }}</td>
+          <td>{{ item.check_in_time || '—' }}</td><td>{{ item.check_out_time || '—' }}</td>
+          <td><span class="status" [class.late]="item.status === 'Late'" [class.absent]="item.status === 'Leave'">{{ item.status }}</span></td>
+          <td>{{ item.working_hours || '—' }}</td>
+          <td><a *ngIf="item.latitude != null && item.longitude != null" [href]="mapLink(item)" target="_blank">{{ item.location || 'View Map' }}</a><span *ngIf="item.latitude == null">{{ item.location || 'No Location' }}</span></td>
+          <td><button class="delete-att-btn" (click)="deleteAttendance(item)">Delete</button></td>
+        </tr>
+        <tr *ngIf="attendance.length === 0"><td colspan="8">No attendance records for this month.</td></tr>
+      </tbody>
+    </table></div>
+  </ng-container>
+</ion-content>

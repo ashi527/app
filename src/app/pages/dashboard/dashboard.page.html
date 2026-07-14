@@ -1,0 +1,184 @@
+<ion-content>
+  <app-admin-navbar></app-admin-navbar>
+
+  <div class="page-header-row">
+    <div class="page-greeting">
+      <h1>Dashboard</h1>
+      <p>{{ greeting }}, <strong>{{ adminName }}</strong> 👋</p>
+    </div>
+    <div class="clock">
+      <div class="clock-time">{{ currentTime }}</div>
+      <div class="clock-date">{{ currentDate }}</div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="card green-card"><h3>Present Today</h3><h2>{{ stats.present }}</h2></div>
+    <div class="card red-card"><h3>Absent Today</h3><h2>{{ stats.absent }}</h2></div>
+    <div class="card orange-card"><h3>On Leave</h3><h2>{{ stats.on_leave }}</h2></div>
+    <div class="card purple-card"><h3>Total Employees</h3><h2>{{ stats.total }}</h2></div>
+  </div>
+
+  <div class="offices-panel">
+    <div class="offices-head">
+      <div>
+        <h3>Office Locations</h3>
+        <p>Employees can only check in / out inside these geofenced areas.</p>
+      </div>
+      <button class="add-office-btn" (click)="openOfficeModal()">＋ Add Office</button>
+    </div>
+
+    <div class="offices-list" *ngIf="offices.length > 0; else noOffices">
+      <div class="office-chip" *ngFor="let office of offices">
+        <div class="office-info">
+          <strong>{{ office.name }}</strong>
+          <small>{{ office.latitude }}, {{ office.longitude }} · {{ office.radius }} m radius</small>
+        </div>
+        <div class="office-actions">
+          <button (click)="openOfficeModal(office)">Edit</button>
+          <button class="danger" (click)="deleteOffice(office)">Delete</button>
+        </div>
+      </div>
+    </div>
+    <ng-template #noOffices>
+      <p class="no-offices">No office locations yet. Add one so employees can mark attendance. Until then, check-in works from anywhere.</p>
+    </ng-template>
+  </div>
+
+  <div class="filter-section">
+    <input type="text" placeholder="Search by name or employee ID" [(ngModel)]="search" (input)="applyFilters()" />
+    <select [(ngModel)]="department" (change)="applyFilters()">
+      <option value="">All Departments</option>
+      <option *ngFor="let item of departments" [value]="item">{{ item }}</option>
+    </select>
+    <button class="filter-btn" (click)="loadDashboard()">Refresh</button>
+  </div>
+
+  <p *ngIf="loading" class="ion-padding">Loading dashboard data...</p>
+  <p *ngIf="error" class="ion-padding">{{ error }}</p>
+
+  <div class="table-container" *ngIf="!loading && !error">
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Department</th><th>Present</th><th>Late</th><th>Leave</th><th>Attendance</th><th>Hours</th><th>Location</th><th>Today (In / Out)</th><th>Action</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let employee of filteredEmployees">
+          <td>{{ employee.employee_id }}</td>
+          <td><img *ngIf="employee.profile_image" [src]="employee.profile_image" alt="" style="width:32px;height:32px;object-fit:cover;border-radius:50%;vertical-align:middle;margin-right:8px"><span *ngIf="!employee.profile_image" class="badge blue-bg">{{ employee.employee_name.charAt(0).toUpperCase() }}</span> {{ employee.employee_name }}</td>
+          <td>{{ employee.department || '—' }}</td>
+          <td><span class="badge green-bg">{{ employee.present_days }}</span></td>
+          <td><span class="badge yellow-bg">{{ employee.late_days }}</span></td>
+          <td><span class="badge red-bg">{{ employee.leave_days }}</span></td>
+          <td class="attendance">{{ attendancePercent(employee) }}%</td>
+          <td><span class="badge blue-bg">{{ employee.working_hours }} hrs</span></td>
+          <td class="location">{{ employee.current_location || employee.location || '—' }}</td>
+          <td class="today-io">
+            <span class="io-in" *ngIf="employee.today_check_in">In {{ employee.today_check_in }}</span>
+            <span class="io-out" *ngIf="employee.today_check_out">Out {{ employee.today_check_out }}</span>
+            <span class="io-none" *ngIf="!employee.today_check_in && !employee.today_check_out">—</span>
+          </td>
+          <td><div class="actions">
+            <button class="action-btn blue" (click)="viewEmployee(employee.id)">View</button>
+            <button class="action-btn dark" (click)="editEmployee(employee.id)">Edit</button>
+            <button class="action-btn red" (click)="deleteEmployee(employee.id)">Delete</button>
+          </div></td>
+        </tr>
+        <tr *ngIf="filteredEmployees.length === 0"><td colspan="11">No employees found.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="emp-cards" *ngIf="!loading && !error">
+    <div class="emp-card" *ngFor="let employee of filteredEmployees">
+      <div class="emp-card-top">
+        <div class="emp-avatar">
+          <img *ngIf="employee.profile_image" [src]="employee.profile_image" alt="" />
+          <span *ngIf="!employee.profile_image">{{ employee.employee_name.charAt(0).toUpperCase() }}</span>
+        </div>
+        <div class="emp-meta">
+          <strong>{{ employee.employee_name }}</strong>
+          <small>{{ employee.employee_id }} · {{ employee.department || 'No department' }}</small>
+        </div>
+        <div class="menu-anchor">
+          <button class="dots-btn" (click)="toggleMenu(employee.id, $event)" aria-label="Actions">
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.9" /><circle cx="12" cy="12" r="1.9" /><circle cx="12" cy="19" r="1.9" /></svg>
+          </button>
+          <div class="context-menu" *ngIf="openMenuId === employee.id" (click)="$event.stopPropagation()">
+            <button (click)="viewEmployee(employee.id)">View details</button>
+            <button (click)="editEmployee(employee.id)">Edit</button>
+            <button class="danger" (click)="deleteEmployee(employee.id)">Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="emp-stats">
+        <div class="chip"><span class="k">Present</span><span class="v green">{{ employee.present_days }}</span></div>
+        <div class="chip"><span class="k">Late</span><span class="v yellow">{{ employee.late_days }}</span></div>
+        <div class="chip"><span class="k">Leave</span><span class="v red">{{ employee.leave_days }}</span></div>
+        <div class="chip"><span class="k">Rate</span><span class="v">{{ attendancePercent(employee) }}%</span></div>
+      </div>
+
+      <div class="emp-today">
+        <span class="tio" [class.done]="employee.today_check_in">
+          <small>Check In</small><b>{{ employee.today_check_in || '--:--' }}</b>
+        </span>
+        <span class="tio" [class.done]="employee.today_check_out">
+          <small>Check Out</small><b>{{ employee.today_check_out || '--:--' }}</b>
+        </span>
+      </div>
+
+      <div class="emp-foot">
+        <span class="loc">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
+          {{ employee.current_location || employee.location || 'No location' }}
+        </span>
+        <span class="hrs">{{ employee.working_hours }} hrs</span>
+      </div>
+    </div>
+
+    <p *ngIf="filteredEmployees.length === 0" class="empty-cards">No employees found.</p>
+  </div>
+
+  <div class="menu-backdrop" *ngIf="openMenuId !== null" (click)="closeMenu()"></div>
+
+  <div class="modal-backdrop" *ngIf="showOfficeModal" (click)="closeOfficeModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <h3>{{ officeForm.id ? 'Edit Office' : 'Add Office' }}</h3>
+      <p class="modal-sub">Set the office name, coordinates and allowed radius.</p>
+
+      <div class="modal-field">
+        <label>Office Name</label>
+        <input type="text" [(ngModel)]="officeForm.name" placeholder="e.g. Head Office" />
+      </div>
+
+      <div class="modal-row">
+        <div class="modal-field">
+          <label>Latitude</label>
+          <input type="number" step="any" [(ngModel)]="officeForm.latitude" placeholder="20.3754126" />
+        </div>
+        <div class="modal-field">
+          <label>Longitude</label>
+          <input type="number" step="any" [(ngModel)]="officeForm.longitude" placeholder="72.9204172" />
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label>Radius (metres)</label>
+        <input type="number" min="1" [(ngModel)]="officeForm.radius" placeholder="50" />
+        <small class="hint">Leave as 50 for the default radius.</small>
+      </div>
+
+      <button class="use-loc-btn" (click)="useCurrentLocation()" [disabled]="locating">
+        {{ locating ? 'Fetching location…' : '📍 Use my current location' }}
+      </button>
+
+      <p class="modal-error" *ngIf="officeError">{{ officeError }}</p>
+
+      <div class="modal-buttons">
+        <button class="modal-save" (click)="saveOffice()" [disabled]="savingOffice">
+          {{ savingOffice ? 'Saving…' : 'Save Office' }}
+        </button>
+        <button class="modal-cancel" (click)="closeOfficeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</ion-content>

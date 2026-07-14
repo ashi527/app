@@ -1,0 +1,138 @@
+<ion-content>
+
+  <header class="topbar">
+    <button type="button" class="topbar-user" (click)="goToProfile()" aria-label="Open my profile">
+      <span class="tb-avatar">
+        <img *ngIf="employee.profile_image" [src]="employee.profile_image" alt="Profile photo" />
+        <span *ngIf="!employee.profile_image">{{ employee.name.charAt(0).toUpperCase() || '?' }}</span>
+      </span>
+      <span class="tb-meta">
+        <strong>{{ employee.name }}</strong>
+        <small>{{ employee.designation }} · {{ employee.id }}</small>
+      </span>
+      <svg class="tb-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </button>
+  </header>
+
+  <div class="entry-body">
+
+    <section class="clock-card">
+      <span class="clock-label">
+        <span class="dot"></span> Live time
+      </span>
+      <h1 class="clock-time">{{ currentTime }}</h1>
+      <p class="clock-date">{{ currentDate }}</p>
+    </section>
+
+    <section class="status-row">
+      <div class="status-card in">
+        <span class="status-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" /><polyline points="10 17 15 12 10 7" /><line x1="15" y1="12" x2="3" y2="12" />
+          </svg>
+        </span>
+        <div class="status-text">
+          <small>Check In</small>
+          <strong>{{ checkInTime }}</strong>
+        </div>
+      </div>
+      <div class="status-card out">
+        <span class="status-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+        </span>
+        <div class="status-text">
+          <small>Check Out</small>
+          <strong>{{ checkOutTime }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="office-card" *ngIf="assignedOffice">
+      <div class="office-head">
+        <span class="office-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18" /><path d="M5 21V7l7-4 7 4v14" /><path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01" />
+          </svg>
+        </span>
+        <div class="office-title">
+          <small>Assigned office</small>
+          <strong>{{ assignedOffice.name }}</strong>
+        </div>
+      </div>
+      <div class="office-coords">
+        <span class="ocoord"><small>Latitude</small><b>{{ assignedOffice.latitude }}</b></span>
+        <span class="ocoord"><small>Longitude</small><b>{{ assignedOffice.longitude }}</b></span>
+      </div>
+      <div class="office-distance" *ngIf="distanceToOffice">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="3 11 22 2 13 21 11 13 3 11" />
+        </svg>
+        <span>{{ distanceToOffice }}</span>
+      </div>
+    </section>
+
+    <section class="office-card office-card--empty" *ngIf="!assignedOffice">
+      <span class="office-ico">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 21h18" /><path d="M5 21V7l7-4 7 4v14" />
+        </svg>
+      </span>
+      <span>No office assigned yet</span>
+    </section>
+
+    <section class="loc-card">
+      <div class="loc-head">
+        <span class="loc-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" /><circle cx="12" cy="10" r="3" />
+          </svg>
+        </span>
+        <div class="loc-text">
+          <strong>Current location</strong>
+          <small>{{ location }}</small>
+        </div>
+      </div>
+
+      <div class="map-box">
+        <iframe *ngIf="mapUrl" class="map-frame" [src]="mapUrl" (load)="onMapLoaded()" loading="lazy"></iframe>
+
+        <div class="map-skeleton" *ngIf="!mapReady" aria-hidden="true">
+          <div class="map-skeleton__content">
+            <svg class="map-skeleton__pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" /><circle cx="12" cy="10" r="3" />
+            </svg>
+            <span>{{ mapUrl ? 'Loading map…' : 'Waiting for location…' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="loc-coords">
+        <span class="coord"><small>Latitude</small><b>{{ latitude }}</b></span>
+        <span class="coord"><small>Longitude</small><b>{{ longitude }}</b></span>
+      </div>
+    </section>
+
+    <section class="action-row">
+      <button type="button" class="act-btn checkin" (click)="checkIn()" [disabled]="hasCheckedIn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 6 9 17l-5-5" />
+        </svg>
+        {{ hasCheckedIn ? 'Checked In' : 'Check In' }}
+      </button>
+      <button type="button" class="act-btn checkout" (click)="checkOut()" [disabled]="!hasCheckedIn || hasCheckedOut">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        {{ hasCheckedOut ? 'Checked Out' : 'Check Out' }}
+      </button>
+    </section>
+
+    <p class="day-done" *ngIf="hasCheckedOut">✓ Attendance completed for today</p>
+
+  </div>
+
+</ion-content>

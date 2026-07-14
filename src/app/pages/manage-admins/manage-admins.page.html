@@ -1,0 +1,86 @@
+<ion-content>
+  <app-admin-navbar></app-admin-navbar>
+
+  <div class="page-body">
+    <div class="page-header">
+      <div class="header-title">
+        <h1>Manage Admins</h1>
+        <p>Create and manage administrator accounts</p>
+      </div>
+      <button class="back-btn" routerLink="/profile">← Back</button>
+    </div>
+
+    <div class="info-card">
+      <div class="card-title"><h3>Add New Admin</h3></div>
+      <div class="add-grid">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" placeholder="e.g. Manager01" [(ngModel)]="newUsername" autocapitalize="none" spellcheck="false" />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="text" placeholder="At least 4 characters" [(ngModel)]="newPassword" autocapitalize="none" spellcheck="false" />
+        </div>
+        <button class="add-btn" (click)="createAdmin()" [disabled]="creating">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          {{ creating ? 'Adding…' : 'Add Admin' }}
+        </button>
+      </div>
+    </div>
+
+    <div class="card-title section-label">
+      <h3>All Admins <span class="count" *ngIf="admins.length">({{ admins.length }})</span></h3>
+    </div>
+
+    <p *ngIf="loading" class="state">Loading admins…</p>
+    <p *ngIf="error" class="state error">{{ error }}</p>
+
+    <div class="admin-list" *ngIf="!loading && !error">
+      <p class="state" *ngIf="!admins.length">No admins found.</p>
+
+      <div class="admin-row" *ngFor="let a of admins" [class.editing]="editingId === a.id">
+
+        <ng-container *ngIf="editingId !== a.id">
+          <div class="admin-avatar">
+            <img *ngIf="a.profile_image" [src]="a.profile_image" alt="Admin photo" />
+            <span *ngIf="!a.profile_image">{{ initial(a.username) }}</span>
+          </div>
+          <div class="admin-info">
+            <strong>{{ a.username }}<span class="you-badge" *ngIf="a.is_self">You</span></strong>
+            <small>Added {{ a.created_at | date:'mediumDate' }}</small>
+          </div>
+          <div class="admin-actions">
+            <button class="icon-btn edit" (click)="startEdit(a)" aria-label="Edit admin" title="Edit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9" /><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+              </svg>
+            </button>
+            <button class="icon-btn del" (click)="deleteAdmin(a)" [disabled]="a.is_self" aria-label="Delete admin" title="Delete">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
+            </button>
+          </div>
+        </ng-container>
+
+        <div class="edit-form" *ngIf="editingId === a.id">
+          <div class="form-group">
+            <label>Username</label>
+            <input type="text" [(ngModel)]="editUsername" autocapitalize="none" spellcheck="false" />
+          </div>
+          <div class="form-group">
+            <label>New Password <span class="muted">(blank = keep current)</span></label>
+            <input type="text" placeholder="Leave blank to keep current" [(ngModel)]="editPassword" autocapitalize="none" spellcheck="false" />
+          </div>
+          <div class="edit-actions">
+            <button class="save-btn" (click)="saveEdit(a)" [disabled]="saving">{{ saving ? 'Saving…' : 'Save' }}</button>
+            <button class="cancel-btn" (click)="cancelEdit()">Cancel</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</ion-content>
