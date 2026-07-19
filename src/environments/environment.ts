@@ -1,6 +1,6 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000',
+  apiUrl: 'http://attendance-manager.ddns.net:3000',
 };
 
