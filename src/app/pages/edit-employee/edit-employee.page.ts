@@ -42,10 +42,6 @@ export class EditEmployeePage implements OnInit {
       error: () => (this.offices = []),
     });
 
-    this.http.get<any[]>(`${environment.apiUrl}/offices`).subscribe({
-      next: (data) => (this.departments = data || []),
-      error: () => (this.departments = []),
-    });
     this.http.get<any[]>(`${environment.apiUrl}/departments`).subscribe({
       next: (data) => (this.departments = data || []),
       error: () => (this.departments = []),
