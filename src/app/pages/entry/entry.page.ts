@@ -265,10 +265,10 @@ export class AttendancePage implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.isWithinOffice()) {
-      alert('You are not at an office location. Please go to the office to check in.');
-      return;
-    }
+  //  if (!this.isWithinOffice()) {
+  //    alert('You are not at an office location. Please go to the office to check in.');
+  //    return;
+  //  }
 
     const attendanceData = {
       employee_id: this.employee.id,
@@ -308,10 +308,10 @@ export class AttendancePage implements OnInit, OnDestroy {
       return;
     }
 
-    if (!this.isWithinOffice()) {
-      alert('You are not at an office location. Please go to the office to check out.');
-      return;
-    }
+    // if (!this.isWithinOffice()) {
+      // alert('You are not at an office location. Please go to the office to check out.');
+      // return;
+    // }
 
     const attendanceData = {
       employee_id: this.employee.id,

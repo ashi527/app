@@ -26,6 +26,7 @@ export class AddEmployeePage implements OnInit {
     email: '',
     phone: '',
     department: '',
+    department_id: null as number | null,
     designation: '',
     password: '',
     address: '',
@@ -34,6 +35,7 @@ export class AddEmployeePage implements OnInit {
   };
 
   offices: any[] = [];
+  departments: any[] = [];
 
   constructor(
     private http: HttpClient,
@@ -91,6 +93,7 @@ export class AddEmployeePage implements OnInit {
       email: '',
       phone: '',
       department: '',
+      department_id: null,
       designation: '',
       password: '',
       address: '',

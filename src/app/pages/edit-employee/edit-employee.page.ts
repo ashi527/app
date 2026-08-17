@@ -20,6 +20,7 @@ export class EditEmployeePage implements OnInit {
   saving = false;
   error = '';
   offices: any[] = [];
+  departments: any[] = [];
   private employeeRecordId = '';
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {}
@@ -30,6 +31,12 @@ export class EditEmployeePage implements OnInit {
       next: (data) => (this.offices = data || []),
       error: () => (this.offices = []),
     });
+
+this.http.get<any[]>(`${environment.apiUrl}/offices`).subscribe({
+      next: (data) => (this.departments = data || []),
+      error: () => (this.departments = []),
+    });
+
     this.http.get<any>(`${environment.apiUrl}/employee/${this.employeeRecordId}`).subscribe({
       next: (employee) => { this.employee = { ...employee, password: '' }; this.loading = false; },
       error: (error) => { this.error = error.error?.message || 'Unable to load employee'; this.loading = false; },

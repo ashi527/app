@@ -64,11 +64,7 @@
           <label><i class="fa-solid fa-building"></i> Department</label>
           <select [(ngModel)]="employee.department" name="department">
             <option value="" disabled selected>Select department</option>
-            <option>IT Department</option>
-            <option>HR</option>
-            <option>Sales Department</option>
-            <option>Operations Department</option>
-            <option>Tally Department</option>
+            <option *ngFor="let d of departments" >{{ d.name }}</option>
           </select>
         </div>
 

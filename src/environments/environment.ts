@@ -1,6 +1,6 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://attendance-manager.ddns.net:3000',
+  apiUrl: 'https://ashi.apexcloudsol.com/api/v1',
 };
 
