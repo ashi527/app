@@ -12,7 +12,13 @@ import { environment } from '../../../environments/environment';
   templateUrl: './edit-employee.page.html',
   styleUrls: ['./edit-employee.page.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule, IonContent, AdminNavbarComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    IonContent,
+    AdminNavbarComponent,
+  ],
 })
 export class EditEmployeePage implements OnInit {
   employee: any = null;
@@ -23,7 +29,11 @@ export class EditEmployeePage implements OnInit {
   departments: any[] = [];
   private employeeRecordId = '';
 
-  constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.employeeRecordId = this.route.snapshot.paramMap.get('id') || '';
@@ -32,26 +42,40 @@ export class EditEmployeePage implements OnInit {
       error: () => (this.offices = []),
     });
 
-this.http.get<any[]>(`${environment.apiUrl}/offices`).subscribe({
+    this.http.get<any[]>(`${environment.apiUrl}/offices`).subscribe({
       next: (data) => (this.departments = data || []),
       error: () => (this.departments = []),
     });
-
-    this.http.get<any>(`${environment.apiUrl}/employee/${this.employeeRecordId}`).subscribe({
-      next: (employee) => { this.employee = { ...employee, password: '' }; this.loading = false; },
-      error: (error) => { this.error = error.error?.message || 'Unable to load employee'; this.loading = false; },
+    this.http.get<any[]>(`${environment.apiUrl}/departments`).subscribe({
+      next: (data) => (this.departments = data || []),
+      error: () => (this.departments = []),
     });
+    this.http
+      .get<any>(`${environment.apiUrl}/employee/${this.employeeRecordId}`)
+      .subscribe({
+        next: (employee) => {
+          this.employee = { ...employee, password: '' };
+          this.loading = false;
+        },
+        error: (error) => {
+          this.error = error.error?.message || 'Unable to load employee';
+          this.loading = false;
+        },
+      });
   }
 
   selectPhoto(event: Event): void {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 2 * 1024 * 1024) {
+    if (
+      !['image/png', 'image/jpeg', 'image/webp'].includes(file.type) ||
+      file.size > 2 * 1024 * 1024
+    ) {
       alert('Choose a PNG, JPEG or WebP image up to 2 MB');
       return;
     }
     const reader = new FileReader();
-    reader.onload = () => this.employee.profile_image = String(reader.result);
+    reader.onload = () => (this.employee.profile_image = String(reader.result));
     reader.readAsDataURL(file);
   }
 
@@ -61,9 +85,20 @@ this.http.get<any[]>(`${environment.apiUrl}/offices`).subscribe({
       return;
     }
     this.saving = true;
-    this.http.put(`${environment.apiUrl}/employee/${this.employeeRecordId}`, this.employee).subscribe({
-      next: () => { this.saving = false; this.router.navigate(['/employee']); },
-      error: (error) => { this.saving = false; alert(error.error?.message || 'Unable to update employee'); },
-    });
+    this.http
+      .put(
+        `${environment.apiUrl}/employee/${this.employeeRecordId}`,
+        this.employee
+      )
+      .subscribe({
+        next: () => {
+          this.saving = false;
+          this.router.navigate(['/employee']);
+        },
+        error: (error) => {
+          this.saving = false;
+          alert(error.error?.message || 'Unable to update employee');
+        },
+      });
   }
 }

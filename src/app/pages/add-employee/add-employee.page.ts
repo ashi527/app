@@ -17,7 +17,13 @@ import { environment } from '../../../environments/environment';
   styleUrls: ['./add-employee.page.scss'],
   standalone: true,
 
-  imports: [CommonModule, FormsModule, RouterModule, IonContent, AdminNavbarComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    IonContent,
+    AdminNavbarComponent,
+  ],
 })
 export class AddEmployeePage implements OnInit {
   employee = {
@@ -37,27 +43,31 @@ export class AddEmployeePage implements OnInit {
   offices: any[] = [];
   departments: any[] = [];
 
-  constructor(
-    private http: HttpClient,
-    private router: Router,
-  ) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   ngOnInit(): void {
     this.http.get<any[]>(`${environment.apiUrl}/offices`).subscribe({
       next: (data) => (this.offices = data || []),
       error: () => (this.offices = []),
     });
+    this.http.get<any[]>(`${environment.apiUrl}/departments`).subscribe({
+      next: (data) => (this.departments = data || []),
+      error: () => (this.departments = []),
+    });
   }
 
   selectPhoto(event: Event) {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (!file) return;
-    if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 2 * 1024 * 1024) {
+    if (
+      !['image/png', 'image/jpeg', 'image/webp'].includes(file.type) ||
+      file.size > 2 * 1024 * 1024
+    ) {
       alert('Choose a PNG, JPEG or WebP image up to 2 MB');
       return;
     }
     const reader = new FileReader();
-    reader.onload = () => this.employee.profile_image = String(reader.result);
+    reader.onload = () => (this.employee.profile_image = String(reader.result));
     reader.readAsDataURL(file);
   }
 
@@ -101,6 +111,4 @@ export class AddEmployeePage implements OnInit {
       profile_image: null,
     };
   }
-
-  
 }
